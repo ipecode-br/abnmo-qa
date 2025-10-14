@@ -5,4 +5,4 @@ Cypress.Commands.add("login", (emailEntrada, senhaEntrada) => {
     cy.get(loginElemento.email).should("be.visible").type(emailEntrada)
     cy.get(loginElemento.senha).should("be.visible").type(senhaEntrada, { log: false })
     cy.get(loginElemento.btnEntrar).should("be.visible").click()
-})
+});
