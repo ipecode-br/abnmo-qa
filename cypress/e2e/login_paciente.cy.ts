@@ -32,7 +32,7 @@ describe("Login paciente", () => {
         cy.contains("Recuperar senha").should("be.visible");
         cy.screenshot();
     });
-    it.only("Realizar login com paciente", () => {
+    it("Realizar login com paciente", () => {
         cy.login(Cypress.env("paciente").email, Cypress.env("paciente").senha);
         cy.url({ timeout: 20000 }).should("include", "/paciente");
         cy.contains('Iniciar triagem').should("be.visible");
