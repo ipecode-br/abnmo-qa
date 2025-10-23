@@ -3,35 +3,39 @@ describe("Login", () => {
         cy.visit("/");
     });  
 
-    it("Realizar login com admin", () => {
+    it("Deve permitir login com credenciais válidas (admin)", () => {
         // Teste para validar login com admin e validação da tela inicial
         cy.login(Cypress.env("admin").email, Cypress.env("admin").senha);
-        cy.url({ timeout: 20000 }).should("include", "/");
+        cy.url({ timeout: 20000 }).should("include", "https://homolog.abnmo.ipecode.com.br/");
+        // Aguarda o e-mail na home para garantir carregamento
+        cy.contains("admin@ipecode.com.br", { timeout: 10000 })
+        .scrollIntoView()
+        .should("be.visible");
         cy.screenshot();
     });
 
-    it("Validar inserção de senha curta", () => {
+    it("Deve exibir erro ao inserir senha curta", () => {
         // Teste para validar exibição de mensagem de erro ao inserir senha com menos de oito caracteres    
         cy.login(Cypress.env("senha_curta").email, Cypress.env("senha_curta").senha);
-        cy.url({ timeout: 20000 }).should("include", "/");
+        cy.url({ timeout: 20000 }).should("include", "/conta/entrar");
         cy.contains("Sua senha deve conter 8 ou mais caracteres", { timeout: 10000 })
          .should("be.visible");
         cy.screenshot()
     });
         
-    it("Validar inserção de domínio inválido", () => {
+    it("Deve exibir erro ao inserir domínio inválido", () => {
         // Teste para validar exibição de mensagem de erro ao inserir domínio inválido    
         cy.login(Cypress.env("email_invalido").email, Cypress.env("email_invalido").senha);
-        cy.url({ timeout: 20000 }).should("include", "/");
+        cy.url({ timeout: 20000 }).should("include", "/conta/entrar");
         cy.contains("Credenciais inválidas. Por favor, tente novamente.", { timeout: 10000 })
          .should("be.visible");
         cy.screenshot()       
     });
 
-    it("Validar inserção do campo e-mail vazio", () => {
+    it("Deve exibir erro ao deixar o campo e-mail vazio", () => {
         // Teste para validar exibição de mensagem de erro ao deixar o campo e-mail vazio    
         cy.login(Cypress.env("vazio").email, Cypress.env("vazio").senha);
-        cy.url({ timeout: 20000 }).should("include", "/");
+        cy.url({ timeout: 20000 }).should("include", "/conta/entrar");
         cy.contains("Insira um e-mail válido", { timeout: 10000 })
          .should("be.visible");
         cy.screenshot()       
