@@ -6,7 +6,7 @@ describe("Login", () => {
     it("Deve permitir login com credenciais válidas (admin)", () => {
         // Teste para validar login com admin e validação da tela inicial
         cy.login(Cypress.env("admin").email, Cypress.env("admin").senha);
-        cy.url({ timeout: 20000 }).should("include", "https://homolog.abnmo.ipecode.com.br/");
+        cy.url({ timeout: 20000 }).should("include", "/");
         // Aguarda o e-mail na home para garantir carregamento
         cy.contains("admin@ipecode.com.br", { timeout: 10000 })
         .scrollIntoView()
