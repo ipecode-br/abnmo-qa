@@ -20,8 +20,15 @@ export class TriagemPage {
         cointainerListaAnos: () => cy.get('[role="listbox"][data-state="open"]'),
         viewportRolavelAnos: () => this.elements.cointainerListaAnos().find('[role="presentation"]'),
         campoEstado: () => cy.get('[id="state"]'),
+        selectEstadoOculto: () => cy.get('button[id="state"]').next('select[aria-hidden="true"]'),
+        campoCidade: () => cy.get('button[id="city"]'),
+        selectCidadeOculto: () => cy.get('button[id="city"]').next('select[aria-hidden="true"]'),
+        campoTelefone: () => cy.get('[id="phone"]'),
+        botaoVoltar: () => cy.contains('button', 'Voltar'),
         
-        
+
+
+
     };
 
     clicarIniciartriagem() {
@@ -47,11 +54,13 @@ export class TriagemPage {
       
     };
 
-    avancarEtapa2() {
+    preencherEtapa1() {
         const nome = 'Maria da Silva';
         const anoNascimento = '1990';
         const mesNascimento = 'Jul';
         const diaNascimento = '21';
+        const tel = '11972401234';
+        const cpf = '12345678910';
 
         this.elements.campoNome().type(nome);
 
@@ -68,7 +77,17 @@ export class TriagemPage {
         
         this.elements.calendarioContainer().find('button[type="button"]').contains(diaNascimento).click();
 
-        this.elements.campoEstado().click()
+        this.elements.selectEstadoOculto().select('São Paulo', { force: true });
+        this.elements.campoEstado().should('contain', 'São Paulo');
+        
+        this.elements.selectCidadeOculto().select('Osasco', { force: true });
+        this.elements.campoCidade().should('contain', 'Osasco');
+    
+        this.elements.campoTelefone().type(tel);
 
+        this.elements.campoCPF().type(cpf);
+
+        this.elements.botaoAvancar().click();
+    
     };
-}
+ }
