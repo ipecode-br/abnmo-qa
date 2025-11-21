@@ -1,4 +1,4 @@
-/screenshots
+/cypress/screenshots
 allure-results
 allure-report/
 /node_modules
