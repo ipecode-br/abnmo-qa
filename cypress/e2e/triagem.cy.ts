@@ -211,7 +211,7 @@ describe("Triagem Paciente", () => {
 
     });
 
-    it.only("Finalizar formulário", () => {
+    it("Finalizar formulário", () => {
         cy.login(Cypress.env("paciente").email, Cypress.env("paciente").senha);
         cy.url({ timeout: 20000 }).should("include", "/paciente");
         triagemPage.clicarIniciartriagem();
