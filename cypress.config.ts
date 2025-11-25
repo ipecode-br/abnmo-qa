@@ -42,3 +42,4 @@ export default defineConfig({
   },
   env: { allure: true },
 });
+

@@ -1,4 +1,5 @@
-import './commands'
+import 'cypress-xpath';
+import './commands';
 import "@shelex/cypress-allure-plugin";
 
 after(() => {
