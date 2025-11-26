@@ -1,4 +1,4 @@
-import { loginElemento } from "../support/page/loginPage"
+import { loginElemento } from "./page/loginPage"
 
 Cypress.Commands.add("login", (emailEntrada, senhaEntrada) => {
     cy.visit("/")

@@ -7,7 +7,7 @@ describe("Triagem Paciente", () => {
         cy.visit("/");
     });
 
-    it("Realizar login com paciente", () => {
+    it("Acessar formulário de triagem", () => {
         cy.login(Cypress.env("paciente").email, Cypress.env("paciente").senha)
         cy.url({ timeout: 20000 }).should("include", "/paciente");
         triagemPage.clicarIniciartriagem();
@@ -18,32 +18,49 @@ describe("Triagem Paciente", () => {
     it("Validar preencimento de campos obrigatórios", () => {
         cy.login(Cypress.env("paciente").email, Cypress.env("paciente").senha);
         cy.url({ timeout: 20000 }).should("include", "/paciente");
+
         triagemPage.clicarIniciartriagem();
         triagemPage.validarPaginaTriagemCarregada();
+
+        triagemPage.clicarEmAvancar();
+        
         triagemPage.validarCamposObrigatorios();
+
         cy.screenshot()
     });
 
     it("Validar CPF", () => {
         cy.login(Cypress.env("paciente").email, Cypress.env("paciente").senha);
+        
         cy.url({ timeout: 20000 }).should("include", "/paciente");
+        
         triagemPage.clicarIniciartriagem();
         triagemPage.validarPaginaTriagemCarregada();
+        
         triagemPage.validarCPFInvalido();
+       
         cy.screenshot();
     });
 
     it("Avançar para a etapa 2", () => {
         cy.login(Cypress.env("paciente").email, Cypress.env("paciente").senha);
+    
         cy.url({ timeout: 20000 }).should("include", "/paciente");
+    
         triagemPage.clicarIniciartriagem();
         triagemPage.validarPaginaTriagemCarregada();
+    
         triagemPage.preencherEtapa1();
+    
+        triagemPage.clicarEmAvancar();
+       
+        cy.url({ timeout: 20000 }).should("include", "/laudo-medico");
+
         cy.screenshot();
     });
 
     it("Voltar para etapa 1 ter dados persistidos", () => {
-        const nome = 'Maria da Silva';
+        const nome = 'Maria de Souza';
         const dataNascimentoEsperada = '21/07/1990';
         const generoEsperado = 'Mulher (Cis)';
         const estadoEsperado = 'São Paulo';
@@ -52,21 +69,25 @@ describe("Triagem Paciente", () => {
         
         cy.login(Cypress.env("paciente").email, Cypress.env("paciente").senha);
         cy.url({ timeout: 20000 }).should("include", "/paciente");
+       
         triagemPage.clicarIniciartriagem();
         triagemPage.validarPaginaTriagemCarregada();
         triagemPage.preencherEtapa1();
 
-        triagemPage.elements.botaoVoltar().click();
+        triagemPage.clicarEmAvancar();
+        cy.url({ timeout: 20000 }).should("include", "/laudo-medico");
 
-        triagemPage.elements.campoNome().should('have.value', nome); 
+        triagemPage.clicarVoltar();
 
-        triagemPage.elements.campoGenero().should('contain', generoEsperado);
+        triagemPage.elements.seusDados.inputNome().should('have.value', nome); 
 
-        triagemPage.elements.campoDataNascimento().should('contain', dataNascimentoEsperada);
+        triagemPage.elements.seusDados.inputGenero().should('contain', generoEsperado);
+
+        triagemPage.elements.seusDados.campoDataNascimento().should('contain', dataNascimentoEsperada);
     
-        triagemPage.elements.campoEstado().should('contain', estadoEsperado);
+        triagemPage.elements.seusDados.inputEstado().should('contain', estadoEsperado);
     
-        triagemPage.elements.campoCidade().should('contain', cidadeEsperada);
+        triagemPage.elements.seusDados.inputCidade().should('contain', cidadeEsperada);
     
         cy.screenshot();
     });
@@ -74,19 +95,22 @@ describe("Triagem Paciente", () => {
     it("Validar preenchimento de campos obrigatorios 2", () => {
         cy.login(Cypress.env("paciente").email, Cypress.env("paciente").senha);
         cy.url({ timeout: 20000 }).should("include", "/paciente");
+     
         triagemPage.clicarIniciartriagem();
+        
         triagemPage.validarPaginaTriagemCarregada();
         triagemPage.preencherEtapa1();
-        triagemPage.elements.botaoAvancar(); 
+        triagemPage.clicarEmAvancar();
 
         cy.url({ timeout: 20000 }).should("include", "/laudo-medico");
 
-        triagemPage.elements.botaoProxEtapa().click();
+        triagemPage.clicarEmAvancarFinal();
     
         cy.contains('Você possui alguma deficiência?*').parents('div').contains('p', 'Selecione "Sim" ou "Não"').should('be.visible');
         cy.contains('Precisa de assistência legal?*').parents('div').contains('p', 'Selecione "Sim" ou "Não"').should('be.visible');
         cy.contains('Faz uso de medicamentos?*').parents('div').contains('p', 'Selecione "Sim" ou "Não"').should('be.visible');
         cy.contains('Você possui um Diagnóstico de NMO?*').parents('div').contains('p', 'Selecione "Sim" ou "Não"').should('be.visible');
+      
         cy.screenshot();
 
     });
@@ -94,73 +118,89 @@ describe("Triagem Paciente", () => {
     it("Avançar Etapa 3", () => {
         cy.login(Cypress.env("paciente").email, Cypress.env("paciente").senha);
         cy.url({ timeout: 20000 }).should("include", "/paciente");
+     
         triagemPage.clicarIniciartriagem();
+     
         triagemPage.validarPaginaTriagemCarregada();
         triagemPage.preencherEtapa1();
-        triagemPage.elements.botaoAvancar(); 
+        triagemPage.clicarEmAvancar(); 
 
         cy.url({ timeout: 20000 }).should("include", "/laudo-medico");
 
-        triagemPage.elements.botaoProxEtapa().click();
-
         triagemPage.preencherEtapa2();
+        triagemPage.clicarEmAvancarFinal();
+
+        cy.url({ timeout: 20000 }).should("include", "/rede-de-apoio");
+
         cy.screenshot();
     });
 
     it("Adicionar Rede de Apoio", () => {
+           
         cy.login(Cypress.env("paciente").email, Cypress.env("paciente").senha);
+        
         cy.url({ timeout: 20000 }).should("include", "/paciente");
         triagemPage.clicarIniciartriagem();
+        
         triagemPage.validarPaginaTriagemCarregada();
         triagemPage.preencherEtapa1();
-        triagemPage.elements.botaoAvancar(); 
+        triagemPage.clicarEmAvancar(); 
 
         cy.url({ timeout: 20000 }).should("include", "/laudo-medico");
 
-        triagemPage.elements.botaoProxEtapa().click();
-
         triagemPage.preencherEtapa2();
-        triagemPage.addRedeApoio();        
+        triagemPage.clicarEmAvancarFinal();
+
+        triagemPage.addRedeApoio();  
+        
+        cy.screenshot();
 
     });
 
     it("Remover Rede de Apoio", () => {
+        
         cy.login(Cypress.env("paciente").email, Cypress.env("paciente").senha);
         cy.url({ timeout: 20000 }).should("include", "/paciente");
         triagemPage.clicarIniciartriagem();
+        
         triagemPage.validarPaginaTriagemCarregada();
         triagemPage.preencherEtapa1();
-        triagemPage.elements.botaoAvancar(); 
+        triagemPage.clicarEmAvancar(); 
 
         cy.url({ timeout: 20000 }).should("include", "/laudo-medico");
-
-        triagemPage.elements.botaoProxEtapa().click();
-
         triagemPage.preencherEtapa2();
+        triagemPage.clicarEmAvancarFinal();
+        
         triagemPage.addRedeApoio();        
         triagemPage.removerRedeApoio();
+
+        cy.screenshot();
     });
    
     it("Dados persistidos na Etapa2 e Apoio", () => {
+      
         cy.login(Cypress.env("paciente").email, Cypress.env("paciente").senha);
         cy.url({ timeout: 20000 }).should("include", "/paciente");
         triagemPage.clicarIniciartriagem();
+        
         triagemPage.validarPaginaTriagemCarregada();
         triagemPage.preencherEtapa1();
-        triagemPage.elements.botaoAvancar(); 
+        triagemPage.clicarEmAvancar(); 
 
         cy.url({ timeout: 20000 }).should("include", "/laudo-medico");
-
-        triagemPage.elements.botaoProxEtapa().click();
-
         triagemPage.preencherEtapa2();
+        triagemPage.clicarEmAvancarFinal();
+
+        cy.url({ timeout: 20000 }).should("include", "/rede-de-apoio");
         triagemPage.addRedeApoio();  
-
-        triagemPage.elements.botaoVoltarApoio().click();
-
+        triagemPage.clicarVoltar();
 
         triagemPage.validarPersistenciaEtapa2();
+
+        triagemPage.clicarEmAvancarFinal();
+
         triagemPage.persistirRededeApoio();
+
         cy.screenshot();
 
     });
@@ -175,35 +215,36 @@ describe("Triagem Paciente", () => {
         cy.login(Cypress.env("paciente").email, Cypress.env("paciente").senha);
         cy.url({ timeout: 20000 }).should("include", "/paciente");
         triagemPage.clicarIniciartriagem();
+       
         triagemPage.validarPaginaTriagemCarregada();
+        cy.url({ timeout: 20000 }).should("include", "/seus-dados");
         triagemPage.preencherEtapa1();
-        triagemPage.elements.botaoAvancar(); 
+        triagemPage.clicarEmAvancar(); 
 
-        cy.url({ timeout: 20000 }).should("include", "/laudo-medico");
-
-        triagemPage.elements.botaoProxEtapa().click();
-
+        cy.url({ timeout: 20000 }).should("include", "/laudo-medico");    
         triagemPage.preencherEtapa2();
+        triagemPage.clicarEmAvancarFinal();
+        
+        cy.url({ timeout: 20000 }).should("include", "/rede-de-apoio");
         triagemPage.addRedeApoio();
 
-        triagemPage.elements.botaoInicio().click();
-        triagemPage.elements.botaoIniciarTriagem().click();
+        triagemPage.clicarInicio();
 
+        triagemPage.clicarIniciartriagem(); 
         
         triagemPage.validarPaginaTriagemCarregada();
-       
-        triagemPage.elements.campoNome().should('have.value', nome); 
-        triagemPage.elements.campoGenero().should('contain', generoEsperado);
-        triagemPage.elements.campoDataNascimento().should('contain', dataNascimentoEsperada);
-        triagemPage.elements.campoEstado().should('contain', estadoEsperado);
-        triagemPage.elements.campoCidade().should('contain', cidadeEsperada);
 
-        triagemPage.elements.botaoAvancar().click();
+        cy.url({ timeout: 20000 }).should("include", "/seus-dados");
+        triagemPage.validarPersistenciaEtapa1();
+
+        triagemPage.clicarEmAvancar();
 
         cy.url({ timeout: 20000 }).should("include", "/laudo-medico");
-
         triagemPage.validarPersistenciaEtapa2();
         
+        triagemPage.clicarEmAvancarFinal();
+
+        cy.url({ timeout: 20000 }).should("include", "/rede-de-apoio");
         triagemPage.persistirRededeApoio();
         
         
@@ -214,19 +255,27 @@ describe("Triagem Paciente", () => {
     it("Finalizar formulário", () => {
         cy.login(Cypress.env("paciente").email, Cypress.env("paciente").senha);
         cy.url({ timeout: 20000 }).should("include", "/paciente");
+     
         triagemPage.clicarIniciartriagem();
+     
         triagemPage.validarPaginaTriagemCarregada();
+
+        cy.url({ timeout: 20000 }).should("include", "/seus-dados");
         triagemPage.preencherEtapa1();
-        triagemPage.elements.botaoAvancar(); 
+        triagemPage.clicarEmAvancar(); 
 
         cy.url({ timeout: 20000 }).should("include", "/laudo-medico");
 
-        triagemPage.elements.botaoProxEtapa().click();
-
         triagemPage.preencherEtapa2();
-        triagemPage.addRedeApoio();       
-        triagemPage.finalizarFormulario(); 
-        
+        triagemPage.clicarEmAvancarFinal();
+
+        cy.url({ timeout: 20000 }).should("include", "/rede-de-apoio");
+        triagemPage.addRedeApoio();
+
+        triagemPage.clicarFinalizar();
+        triagemPage.mensagemDeConfirmacao();
+
+        cy.screenshot();
     });
 
 });
