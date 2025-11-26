@@ -1,6 +1,7 @@
-/screenshots
+/cypress/screenshots
 allure-results
 allure-report/
 /node_modules
 cypress.env.json
 /package-lock.json
+login.cy.ts
