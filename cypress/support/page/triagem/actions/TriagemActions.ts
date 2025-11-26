@@ -6,7 +6,7 @@ export class TriagemActions {
   }
 
   avancar() {
-    commonElements.btnAvancar().click();
+    commonElements.btnSubmit().click();
   }
 
   voltar() {
@@ -14,7 +14,7 @@ export class TriagemActions {
   }
 
   proximaEtapa() {
-    commonElements.btnProximaEtapa().click();
+    commonElements.btnSubmitFinal().click();
   }
 
   finalizar() {
